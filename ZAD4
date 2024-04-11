@@ -1,8 +1,9 @@
 
 -- utworzenie bazy danych i rozliczenia
-CREATE DATABASE firma3;
+USE firma;
 GO
-create SCHEMA rozliczenia;
+CREATE SCHEMA rozliczenia;
+GO
 -- tabela pracownicy
 CREATE TABLE rozliczenia.pracownicy(id_pracownika int primary key, imie varchar(50), nazwisko varchar(50), adres varchar(100), telefon varchar(15));
 -- tabela godziny
