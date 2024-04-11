@@ -1,0 +1,72 @@
+
+-- utworzenie bazy danych i rozliczenia
+CREATE DATABASE firma3;
+GO
+create SCHEMA rozliczenia;
+-- tabela pracownicy
+CREATE TABLE rozliczenia.pracownicy(id_pracownika int primary key, imie varchar(50), nazwisko varchar(50), adres varchar(100), telefon varchar(15));
+-- tabela godziny
+CREATE TABLE rozliczenia.godziny(id_godziny int primary key,data DATE,liczba_godzin INT,id_pracownika INT,foreign key (id_pracownika) references rozliczenia.pracownicy(id_pracownika));
+-- tabela premii
+CREATE TABLE rozliczenia.premie (id_premii int PRIMARY KEY,rodzaj VARCHAR(100), kwota NUMERIC(10, 2));
+-- tabela pensje
+CREATE TABLE rozliczenia.pensje (id_pensji int PRIMARY KEY,stanowisko VARCHAR(100),kwota NUMERIC(10, 2),id_premii INT, FOREIGN KEY (id_premii) REFERENCES rozliczenia.premie(id_premii));
+
+ALTER TABLE rozliczenia.pracownicy ALTER COLUMN id_pracownika INT NOT NULL;
+ALTER TABLE rozliczenia.pracownicy ALTER COLUMN imie VARCHAR(50) NOT NULL;
+ALTER TABLE rozliczenia.pracownicy ALTER COLUMN nazwisko VARCHAR(50) NOT NULL;
+
+ALTER TABLE rozliczenia.godziny ALTER COLUMN id_godziny INT NOT NULL;
+ALTER TABLE rozliczenia.godziny ALTER COLUMN data DATE NOT NULL;
+
+ALTER TABLE rozliczenia.premie ALTER COLUMN id_premii INT NOT NULL;
+ALTER TABLE rozliczenia.premie ALTER COLUMN kwota NUMERIC(10, 2) NOT NULL;
+
+ALTER TABLE rozliczenia.pensje ALTER COLUMN id_pensji INT NOT NULL;
+ALTER TABLE rozliczenia.pensje ALTER COLUMN kwota NUMERIC(10, 2) NOT NULL;
+
+
+-- dodanie klucza pracownika do pensji
+ALTER TABLE rozliczenia.pensje ADD id_pracownika INT;
+
+ALTER TABLE rozliczenia.pensje ADD CONSTRAINT id_pracownika FOREIGN KEY (id_pracownika) REFERENCES rozliczenia.pracownicy(id_pracownika);
+
+-- dodanie rekordów
+INSERT INTO rozliczenia.pracownicy (imie, nazwisko, adres, telefon) VALUES
+    ('Michal', 'Dyl', 'ul. Krakowska', '112'),
+    ('Kacper', 'Baranowski', 'ul. Dzbanowska', '997'),
+    ('Piotr', 'Olchowski', 'ul. Osuwiskowa 10', '123-456-789'),
+    ('Anna', 'Franczykowska', 'ul. Numeryczna 2', '123-444-555'),
+    ('Bartlomiej', 'Sanoczkanski', 'ul. Dwojkowa', '888-999-000'),
+    ('Monika', 'Kociolowska', 'ul. MMA 12', '000-222-111'),
+    ('Natalia', 'Kaczmarewska', 'ul. fanonly 2', '999'),
+    ('Karolina', 'Wojtyłowksa', 'pl. Zmartwychwstania 1', '474-565-666'),
+    ('Marcin', 'Najmanski', 'ul. Klepanska 8', '999-999-999'),
+    ('Michal', 'Lubszczanski', 'ul. Bazowa 6', '123-654-888');
+
+INSERT INTO rozliczenia.premie (rodzaj, kwota) VALUES('Premia odświętna', 999),('Premia za dobre sprawowanie', 777),('Premia inflacyjna', 666),('Premia urodzinowa', 1111),('Premia imieninowa', 111),('Premia motywacyjna', 10000),('Premia becikowa', 1),('Premia dla seniora', -100),('Premia za awans dla kobiet', 70),('Premia za awans dla mezczyzn', 1000);
+
+INSERT INTO rozliczenia.godziny (data, liczba_godzin, id_pracownika) VALUES('2024-12-31', 1, 1),('2024-12-31', 2, 2),('2024-12-31', 3, 3),('2024-12-31', 4, 4),('2024-12-31', 5, 5),('2024-12-31', 6, 6),('2024-12-31', 7, 7),('2024-12-31', 8, 8),('2024-12-31', 9, 9),('2024-12-31', 10, 10);
+
+INSERT INTO rozliczenia.pensje (stanowisko, kwota, id_premii) VALUES('Kierownik', 5000, 1),('Kierownik kierownika', 3500, 3),('Analityk', 2500, 2),('Księgowy', 4000, 4),('Doradca zawodowy', 3000, 5),('Administrator', 2800, 6),('Intelektualista', 3200, 7), ('Technik', 4200, 6),('Medyk', 2600, 9),('Inżynier', 3800, 10);
+    
+
+
+select nazwisko, adres from rozliczenia.pracownicy;
+
+-- DZIEN I MEISIAC
+SELECT 
+    DATEPART(WEEKDAY, data) AS dzien_tygodnia,
+    DATEPART(MONTH, data) AS miesiac
+FROM
+    rozliczenia.godziny;
+
+-- ZMIANA NAZWY I DODANIE NOWEJ KOLUMNY
+EXEC sp_rename 'rozliczenia.pensje.kwota', 'kwota_brutto', 'COLUMN';
+
+ALTER TABLE rozliczenia.pensje ADD kwota_netto NUMERIC(10, 2);
+
+
+UPDATE rozliczenia.pensje SET kwota_netto = kwota_brutto * 0.4;
+
+select * from rozliczenia.pensje;
