@@ -41,7 +41,7 @@ INSERT INTO rozliczenia.pracownicy (imie, nazwisko, adres, telefon) VALUES
     ('Bartlomiej', 'Sanoczkanski', 'ul. Dwojkowa', '888-999-000'),
     ('Monika', 'Kociolowska', 'ul. MMA 12', '000-222-111'),
     ('Natalia', 'Kaczmarewska', 'ul. fanonly 2', '999'),
-    ('Karolina', 'Wojtyłowksa', 'pl. Zmartwychwstania 1', '474-565-666'),
+    ('Karolina', 'Wojtyłowksa', 'ul. Zmartwychwstania 1', '474-565-666'),
     ('Marcin', 'Najmanski', 'ul. Klepanska 8', '999-999-999'),
     ('Michal', 'Lubszczanski', 'ul. Bazowa 6', '123-654-888');
 
