@@ -1,0 +1,164 @@
+--CREATE DATABASE firma2;
+--USE firma2;
+--CREATE SCHEMA ksiegowosc;
+--CREATE TABLE ksiegowosc.pracownicy (
+--id_pracownika INTEGER NOT NULL PRIMARY KEY,
+--imie VARCHAR(50) NOT NULL,
+--nazwisko VARCHAR(50) NOT NULL,
+--adres VARCHAR(100) NOT NULL,
+--telefon INTEGER);
+
+--CREATE TABLE ksiegowosc.godziny (
+--id_godziny INTEGER NOT NULL PRIMARY KEY,
+--dataa DATE NOT NULL,
+--liczba_godzin INTEGER NOT NULL,
+--id_pracownika INTEGER NOT NULL,
+--FOREIGN KEY (id_pracownika)
+--REFERENCES ksiegowosc.pracownicy (id_pracownika)
+--ON DELETE CASCADE
+--ON UPDATE CASCADE
+--);
+--CREATE TABLE ksiegowosc.pensja (
+--id_pensji INTEGER NOT NULL PRIMARY KEY,
+--stanowisko VARCHAR(50) NOT NULL,
+--kwota INTEGER NOT NULL,);
+--CREATE TABLE ksiegowosc.premia (
+--id_premii INTEGER NOT NULL PRIMARY KEY,
+--rodzaj VARCHAR(100),
+--kwota INTEGER NOT NULL);
+
+--CREATE TABLE ksiegowosc.wynagrodzenia (
+--id_wynagrodzenia INTEGER NOT NULL PRIMARY KEY,
+--dataa DATE NOT NULL,
+--id_pracownika INTEGER NOT NULL,
+--id_godziny INTEGER NOT NULL,
+--id_pensji INTEGER NOT NULL,
+--id_premii INTEGER NOT NULL,
+--FOREIGN KEY (id_pracownika)
+--REFERENCES ksiegowosc.pracownicy (id_pracownika)
+--ON DELETE NO ACTION,
+--FOREIGN KEY (id_godziny)
+--REFERENCES ksiegowosc.godziny (id_godziny)
+--ON DELETE NO ACTION,
+--FOREIGN KEY (id_pensji)
+--REFERENCES ksiegowosc.pensja (id_pensji)
+--ON DELETE NO ACTION,
+--FOREIGN KEY (id_premii)
+--REFERENCES ksiegowosc.premia (id_premii)
+--ON DELETE NO ACTION)
+
+--INSERT INTO ksiegowosc.pracownicy VALUES 
+--(1, 'Anna', 'Franczewska', 'Numeryczna', 997997997),
+--(2, 'Justyna', 'Balczewska', 'Graficzna', 999999999),
+--(3, 'Aleks', 'Ciecierzyca', 'Systemowa 32', 112112112),
+--(4, 'Alicja', 'Kocyk', 'Ziemska 44', 000000000),
+--(5, 'Andrzej', 'Swiader', 'Ziemska 34', 966966966),
+--(6, 'Krzysztof', 'Starszy', 'Arkowska 1', 111111111),
+--(7, 'Piotr', 'Olszewicki', 'Stokowa 99', 101010101),
+--(8, 'Wojciech', 'Jablko', 'Algebraiczna 8', 113113113),
+--(9, 'Boguslaw', 'Bezowski', 'Analityczna 33', 300000000),
+--(10, 'Andrzej', 'Lesniacki', 'Wszystkowa 12', 999111999);
+
+--INSERT INTO ksiegowosc.godziny VALUES
+--(1, '2024-05-03', 2, 1),
+--(2, '2024-05-03', 3, 2),
+--(3, '2024-05-03', 3, 3),
+--(4, '2024-05-03', 4, 4),
+--(5, '2024-05-03', 6, 5),
+--(6, '2024-05-03', 7, 6),
+--(7, '2024-05-03', 8, 7),
+--(8, '2024-05-03', 9, 8),
+--(9, '2024-05-03', 33, 9),
+--(10, '2024-05-03', 1, 10);
+ 
+--INSERT INTO ksiegowosc.pensja VALUES
+--(1, 'Prezes', 20000),
+--(2, 'Kierownik', 12000),
+--(3, 'Ksiegowy', 9500),
+--(4, 'Pomockik ksiegowego', 6000),
+--(5, 'Analityk', 6500),
+--(6, 'Manager', 8000),
+--(7, 'Doradca', 6500),
+--(8, 'Sprzedawca', 5000),
+--(9, 'Sprzedawca3', 5000),
+--(10, 'Sprzedawca2', 5000);
+
+--INSERT INTO ksiegowosc.premia VALUES
+--(1, 'Premia zadaniowa', 600),
+--(2, 'Premia udzialowa', 1400),
+--(3, 'Premia motywacyjna', 10),
+--(4, 'Premia frekwencyjna', 400),
+--(5, 'Premia regulaminowa', 500),
+--(6, 'Premia frekwencyjna2', 300),
+--(7, 'Premia prowizyjna', 500),
+--(8, 'Premia frekwencyjna3', 200),
+--(9, 'Premia indywidualna', 300),
+--(10, 'Premia grupowa', 200);
+ 
+--INSERT INTO ksiegowosc.wynagrodzenie VALUES
+--(1, '2024-03-25',1,2,3,4),
+--(2, '2024-03-25',2,3,4,5),
+--(3, '2024-03-25',3,4,5,6),
+--(4, '2024-03-25',4,5,6,7),
+--(5, '2024-03-25',5,6,7,8),
+--(6, '2024-03-25',6,7,8,9),
+--(7, '2024-03-25',7,8,9,10),
+--(8, '2024-03-25',8,9,10,1),
+--(9, '2024-03-25',9,10,1,2),
+--(10, '2024-03-25',10,1,2,3);
+
+--a
+SELECT id_pracownika,nazwisko FROM ksiegowosc.pracownicy
+--b
+SELECT p.id_pracownika 
+FROM ksiegowosc.pracownicy p
+JOIN ksiegowosc.wynagrodzenie w ON w.id_pracownika = p.id_pracownika
+JOIN ksiegowosc.pensja pn ON w.id_pensji = pn.id_pensji
+WHERE pn.kwota > 1000;
+--c
+SELECT p.id_pracownika
+FROM ksiegowosc.pracownicy p
+JOIN ksiegowosc.wynagrodzenie w ON w.id_pracownika=p.id_pracownika
+JOIN ksiegowosc.pensja pn ON w.id_pensji=pn.id_pensji
+JOIN ksiegowosc.premia pr ON w.id_premii=pr.id_premii
+WHERE pr.id_premii IS NULL AND pn.kwota > 2000;
+--d
+SELECT *
+FROM ksiegowosc.pracownicy
+WHERE imie LIKE 'J%';
+--e
+SELECT *
+FROM ksiegowosc.pracownicy
+WHERE imie LIKE '%a' AND nazwisko LIKE '%n%';
+--f
+SELECT p.imie, p.nazwisko
+FROM ksiegowosc.pracownicy p
+JOIN ksiegowosc.godziny g ON p.id_pracownika=g.id_godziny
+WHERE g.liczba_godzin*20 > 160; --bo 20 dni w miesiacu
+--g
+SELECT p.imie, p.nazwisko
+FROM ksiegowosc.pracownicy p
+JOIN ksiegowosc.wynagrodzenie w ON w.id_pracownika=p.id_pracownika
+JOIN ksiegowosc.pensja pn ON pn.id_pensji = w.id_pensji
+WHERE pn.kwota BETWEEN 1500 AND 3000
+--h
+SELECT p.imie, p.nazwisko
+FROM ksiegowosc.pracownicy p
+JOIN ksiegowosc.wynagrodzenie w ON w.id_pracownika=p.id_pracownika
+JOIN ksiegowosc.godziny g ON g.id_godziny = w.id_godziny
+JOIN ksiegowosc.premia pr ON pr.id_premii = w.id_premii
+WHERE g.liczba_godzin > 8 AND pr.id_premii IS NULL
+--i
+SELECT p.imie, p.nazwisko, pn.kwota
+FROM ksiegowosc.pracownicy p
+JOIN ksiegowosc.wynagrodzenie w ON w.id_pracownika=p.id_pracownika
+JOIN ksiegowosc.pensja pn ON pn.id_pensji = w.id_pensji
+ORDER BY pn.kwota
+--j
+SELECT p.imie, p.nazwisko, pn.kwota AS kwPensji, pr.kwota AS kwPremii 
+--nowe nazwy kolumn co by nie było 2x "kwota"
+FROM ksiegowosc.pracownicy p
+JOIN ksiegowosc.wynagrodzenie w ON w.id_pracownika=p.id_pracownika
+JOIN ksiegowosc.pensja pn ON pn.id_pensji = w.id_pensji
+JOIN ksiegowosc.premia pr ON pr.id_premii = w.id_premii
+ORDER BY pn.kwota DESC, pr.kwota DESC
