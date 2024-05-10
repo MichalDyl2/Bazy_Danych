@@ -1,0 +1,62 @@
+USE AdventureWorks2022;
+GO
+
+CREATE OR ALTER PROCEDURE PrintFibonacci @n INT
+AS
+BEGIN
+    PRINT 'Ciąg Fibonacciego dla ' + CAST(@n AS VARCHAR(5)) + ' elementów:';
+    DECLARE @n1 INT = 0, @n2 INT = 1, @i INT = 0;
+    WHILE @i < @n
+    BEGIN
+        PRINT @n1;
+        DECLARE @temp INT = @n1;
+        SET @n1 = @n2;
+        SET @n2 = @temp + @n2;
+        SET @i += 1;
+    END
+END;
+GO
+
+EXEC PrintFibonacci 10;
+
+
+/*      */
+
+
+
+USE AdventureWorks2022;
+GO
+
+CREATE OR ALTER TRIGGER UpperCaseLastName
+ON Person.Person
+AFTER INSERT
+AS
+BEGIN
+    UPDATE p
+    SET p.LastName = UPPER(i.LastName)
+    FROM Person.Person p
+    INNER JOIN inserted i ON p.BusinessEntityID = i.BusinessEntityID;
+END;
+USE AdventureWorks2022;
+GO
+
+CREATE OR ALTER TRIGGER taxRateMonitoring
+ON Sales.SalesTaxRate
+AFTER UPDATE
+AS
+BEGIN
+    IF EXISTS (SELECT 1 FROM inserted i JOIN deleted d ON i.SalesTaxRateID = d.SalesTaxRateID WHERE ABS(i.TaxRate - d.TaxRate) > 0.3 * d.TaxRate)
+    BEGIN
+        RAISERROR('Zmiana wartości w polu TaxRate o więcej niż 30% jest niedozwolona.', 16, 1);
+        ROLLBACK TRANSACTION;
+    END
+END;
+
+
+
+
+
+/*    */
+
+
+
