@@ -1,0 +1,93 @@
+1)
+USE AdventureWorks2022;
+
+-- Sprawdzenie, czy istnieje tymczasowa tabela i usunięcie jej, jeśli istnieje
+IF OBJECT_ID('tempdb..#TempEmployeeInfo') IS NOT NULL
+	DROP TABLE #TempEmployeeInfo;
+
+-- Tworzenie i wypełnianie tymczasowej tabeli z potrzebnymi danymi
+SELECT 
+    pp.FirstName, 
+    pp.MiddleName, 
+    pp.LastName, 
+    emp.BirthDate, 
+    emp.JobTitle, 
+    eph.Rate
+INTO #TempEmployeeInfo
+FROM 
+    Person.Person AS pp
+JOIN 
+    HumanResources.Employee AS emp ON pp.BusinessEntityID = emp.BusinessEntityID
+JOIN 
+    HumanResources.EmployeePayHistory AS eph ON emp.BusinessEntityID = eph.BusinessEntityID;
+
+-- Wyświetlenie danych z tymczasowej tabeli
+SELECT * FROM #TempEmployeeInfo;
+
+
+
+
+
+2)
+USE AdventureWorksLT2022;
+
+-- Tworzenie CTE i wyciągnięcie potrzebnych danych
+WITH Sale_CTE (CompanyName, FirstName, LastName, TotalDue)  
+AS  
+(  
+    SELECT 
+        cst.CompanyName, 
+        cst.FirstName, 
+        cst.LastName, 
+        SUM(soh.TotalDue) AS TotalDue
+    FROM 
+        SalesLT.SalesOrderHeader AS soh
+    JOIN 
+        SalesLT.Customer AS cst ON soh.CustomerID = cst.CustomerID
+    GROUP BY 
+        cst.CompanyName, 
+        cst.FirstName, 
+        cst.LastName
+)  
+
+-- Wyświetlenie danych z CTE z odpowiednim formatowaniem
+SELECT 
+    CONCAT(CompanyName, ' (', FirstName, ' ', LastName, ')') AS CompanyContact, 
+    TotalDue AS Revenue
+FROM 
+    Sale_CTE;
+
+
+
+
+
+
+
+
+3)
+USE AdventureWorksLT2022;
+
+-- Tworzenie CTE i wyciągnięcie potrzebnych danych
+WITH Category_CTE (Name, SalesValue)  
+AS  
+(  
+    SELECT 
+        prc.Name, 
+        CAST(SUM(sod.LineTotal) AS decimal(16,2)) AS SalesValue
+    FROM 
+        SalesLT.SalesOrderDetail AS sod
+    JOIN 
+        SalesLT.Product AS prd ON sod.ProductID = prd.ProductID
+    JOIN 
+        SalesLT.ProductCategory AS prc ON prd.ProductCategoryID = prc.ProductCategoryID
+    GROUP BY 
+        prc.Name
+)  
+
+-- Wyświetlenie danych z CTE
+SELECT 
+    Name, 
+    SalesValue
+FROM 
+    Category_CTE;
+
